@@ -1,0 +1,9 @@
+[custom.all.crypt]
+type   = "local"
+path   = "."
+ipkg   = "crypt.ipkg"
+
+[custom.all.crypt-test]
+type   = "local"
+path   = "test"
+ipkg   = "test.ipkg"

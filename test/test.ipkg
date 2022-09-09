@@ -1,0 +1,14 @@
+package crypt-test
+version      = 0.0.1
+authors      = "stefan-hoeck"
+readme       = "README.md"
+license      = "BSD-3 Clause"
+langversion >= 0.5.1
+
+depends = base >= 0.5.1
+        , crypt
+
+sourcedir = "src"
+
+main       = Main
+executable = "crypt-test"

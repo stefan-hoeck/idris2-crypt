@@ -1,0 +1,19 @@
+package crypt
+version      = 0.0.1
+authors      = "stefan-hoeck"
+readme       = "README.md"
+license      = "BSD-3 Clause"
+brief        = "FFI bindings to the crypt C-library used for passphrase hashing"
+langversion >= 0.5.1
+
+depends = base >= 0.5.1
+
+sourcedir = "src"
+
+modules = Text.Crypt
+
+prebuild = "make -C support"
+
+postinstall = "make -C support install"
+
+postclean = "make -C support clean"
