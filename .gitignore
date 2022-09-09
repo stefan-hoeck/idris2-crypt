@@ -1,3 +1,5 @@
 build/
 lib/
+support/idris2-crypt.o
+support/libcrypt-idris
 *.*~

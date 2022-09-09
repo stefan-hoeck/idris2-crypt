@@ -1,1 +1,1 @@
-char *idris_gensalt(const char *prefix, unsigned long count);
+char *idris_gensalt(char *pre, unsigned long count);
