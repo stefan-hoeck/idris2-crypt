@@ -14,6 +14,6 @@ modules = Text.Crypt
 
 prebuild = "make -C support"
 
-postinstall = "make -C support install"
+preinstall = "make -C support install"
 
-postclean = "make -C support clean"
+postinstall = "make -C support clean"
