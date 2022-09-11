@@ -30,6 +30,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build lib
-        run: pack install crypt
+        run: pack --no-prompt install crypt
       - name: Run test
-        run: pack run crypt-test -n 1000
+        run: pack --no-prompt run crypt-test -n 1000
