@@ -34,10 +34,10 @@ toSetting cm c with (MinCost cm <= c && c <= MaxCost cm) proof eq
 setting : Gen CryptSetting
 setting = choice
   [ toSetting YesCrypt      <$> bits32 (linear 1 7)
---  , toSetting GhostYesCrypt <$> bits32 (linear 1 7)
---  , toSetting SCrypt        <$> bits32 (linear 6 8)
---  , toSetting BCrypt        <$> bits32 (linear 4 11)
---  , toSetting SHA512Crypt   <$> bits32 (linear 1000 10000)
+  , toSetting GhostYesCrypt <$> bits32 (linear 1 7)
+  , toSetting SCrypt        <$> bits32 (linear 6 8)
+  , toSetting BCrypt        <$> bits32 (linear 4 11)
+  , toSetting SHA512Crypt   <$> bits32 (linear 1000 10000)
   ]
 
 passphrase : Passphrase -> Gen Passphrase
