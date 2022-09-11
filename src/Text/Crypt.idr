@@ -57,10 +57,29 @@ data CryptMethod =
   | SHA512Crypt
   | SHA256Crypt
 
+public export
+Eq CryptMethod where
+  YesCrypt      == YesCrypt      = True
+  GhostYesCrypt == GhostYesCrypt = True
+  SCrypt        == SCrypt        = True
+  BCrypt        == BCrypt        = True
+  SHA512Crypt   == SHA512Crypt   = True
+  SHA256Crypt   == SHA256Crypt   = True
+  _             == _             = False
+
+export
+Show CryptMethod where
+  show YesCrypt      = "YesCrypt"
+  show GhostYesCrypt = "GhostYesCrypt"
+  show SCrypt        = "SCrypt"
+  show BCrypt        = "BCrypt"
+  show SHA512Crypt   = "SHA512Crypt"
+  show SHA256Crypt   = "SHA256Crypt"
+
 export
 cryptPrefix : CryptMethod -> String
 cryptPrefix YesCrypt      = "$y$"
-cryptPrefix GhostYesCrypt = "$gy"
+cryptPrefix GhostYesCrypt = "$gy$"
 cryptPrefix SCrypt        = "$7$"
 cryptPrefix BCrypt        = "$2b$"
 cryptPrefix SHA512Crypt   = "$6$"
@@ -165,12 +184,22 @@ refineHash = refineSalt
 
 ||| Generate a random salt for usage as the `settings` argument
 ||| in the hashing functions.
-export %inline
+|||
+||| Implementation note: This fails on rare occasions for as of yet
+||| unknown reasons. Rerunning seems to fix it, though.
+export
 gensalt :  (cm    : CryptMethod)
         -> (cost  : Bits32)
         -> (0 prf : InRange cm cost)
         => IO String
-gensalt cm cost = fromPrim $ prim__gensalt (cryptPrefix cm) cost
+gensalt cm cost = fromPrim (go 100)
+  where go : Nat -> PrimIO String
+        go Z     w = prim__gensalt (cryptPrefix cm) cost w
+        go (S n) w =
+          let MkIORes str w2 := prim__gensalt (cryptPrefix cm) cost w
+           in case checksalt str of
+                Invalid => go n w2
+                _       => MkIORes str w2
 
 ||| Hash the given passphrase with the given salt.
 ||| Usually, it is best to generate a new salt when hashing

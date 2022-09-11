@@ -5,7 +5,7 @@
 // Set all characters in a char array to 0
 void clear(char *cs, size_t s) {
   for (size_t i = 0; i < s; i++)
-    cs[i] = 0;
+    cs[i] = '\0';
 }
 
 // Generate a random salt for a hashing function
@@ -14,7 +14,14 @@ void clear(char *cs, size_t s) {
 // are passed to the FFI
 char *idris_gensalt(const char *pre, unsigned long count) {
   char buf[CRYPT_GENSALT_OUTPUT_SIZE];
-  return crypt_gensalt_rn(pre, count, NULL, 0, buf, CRYPT_GENSALT_OUTPUT_SIZE);
+
+  char *res =
+    crypt_gensalt_rn(pre, count, NULL, 0, buf, CRYPT_GENSALT_OUTPUT_SIZE);
+
+  if (res == NULL)
+    return "";
+  else
+    return res;
 }
 
 // Encrypt a passphrase with the given salt
@@ -27,10 +34,15 @@ char *idris_crypt(const char *salt, const char *phrase) {
   clear(cd.input, CRYPT_MAX_PASSPHRASE_SIZE);
   cd.initialized = 0;
 
-  stpncpy(cd.setting, salt, CRYPT_OUTPUT_SIZE);
-  stpncpy(cd.input, phrase, CRYPT_MAX_PASSPHRASE_SIZE);
+  stpncpy(cd.setting, salt, CRYPT_OUTPUT_SIZE - 1);
+  stpncpy(cd.input, phrase, CRYPT_MAX_PASSPHRASE_SIZE - 1);
 
-  return crypt_r(phrase, salt, &cd);
+  char *res = crypt_r(phrase, salt, &cd);
+
+  if (res == NULL)
+    return "";
+  else
+    return res;
 }
 
 // Check a cleartext passphrase (`phrase`) against an encrypted
