@@ -62,7 +62,7 @@ roundtrip p = property $ do
   footnote "Hash: \{hashs}"
   Just hash <- pure (refineHash hashs)
     | Nothing => failWith Nothing "failed to hash \{fst pw}."
-  cryptcheck hash pw === True
+  cryptcheck hash (fst pw) === True
 
 
 main : IO ()

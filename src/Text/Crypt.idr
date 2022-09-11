@@ -212,7 +212,7 @@ cryptWithSalt (Element s _) (Element p _) = prim__crypt s p
 ||| Hash a passphrase with the given method and computational
 ||| cost. This will first generate a new random salt, therefore,
 ||| this runs in `IO`.
-export %inline
+export
 crypt :  (cm     : CryptMethod)
       -> (cost   : Bits32)
       -> (phrase : Passphrase)
@@ -222,10 +222,28 @@ crypt cm cost (Element p _) = do
   salt <- gensalt cm cost
   pure $ prim__crypt salt p
 
-||| Check a clear text passphrase against a hashed passphrase.
+||| Hash a passphrase with the given method and computational
+||| cost. This returns `Nothing` if the passphrase is invalid
+||| (i.e. longer than 512 bytes), or the hashing procedure itself
+||| fails to generate a valid salt (which is a highly unlikely thing
+||| to happen).
+export
+cryptMaybe :  (cm     : CryptMethod)
+           -> (cost   : Bits32)
+           -> (phrase : String)
+           -> (0 p1   : InRange cm cost)
+           => IO (Maybe Hash)
+cryptMaybe cm cost phrase = do
+  Just pp <- pure (refinePassphrase phrase) | Nothing => pure Nothing
+  hash    <- crypt cm cost pp
+  pure (refineHash hash)
+
+||| Check a clear-text passphrase against a hashed passphrase.
 ||| If the hash is prefixed with a valid salt (as verified with
 ||| `checksalt hash`), the hashing method, computational cost, and
 ||| salt to be used will be extracted from the `hash`.
 export %inline
-cryptcheck : Hash -> Passphrase -> Bool
-cryptcheck (Element h _) (Element p _) = prim__cryptcheck h p == 0
+cryptcheck : Hash -> String -> Bool
+cryptcheck (Element h _) str =
+  let Just (Element p _) := refinePassphrase str | Nothing => False
+   in prim__cryptcheck h p == 0
