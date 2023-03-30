@@ -188,10 +188,11 @@ refineHash = refineSalt
 ||| Implementation note: This fails on rare occasions for as of yet
 ||| unknown reasons. Rerunning seems to fix it, though.
 export
-gensalt :  (cm    : CryptMethod)
-        -> (cost  : Bits32)
-        -> (0 prf : InRange cm cost)
-        => IO String
+gensalt :
+     (cm         : CryptMethod)
+  -> (cost       : Bits32)
+  -> {auto 0 prf : InRange cm cost}
+  -> IO String
 gensalt cm cost = fromPrim (go 100)
   where go : Nat -> PrimIO String
         go Z     w = prim__gensalt (cryptPrefix cm) cost w
@@ -213,11 +214,12 @@ cryptWithSalt (Element s _) (Element p _) = prim__crypt s p
 ||| cost. This will first generate a new random salt, therefore,
 ||| this runs in `IO`.
 export
-crypt :  (cm     : CryptMethod)
-      -> (cost   : Bits32)
-      -> (phrase : Passphrase)
-      -> (0 p1   : InRange cm cost)
-      => IO String
+crypt :
+     (cm        : CryptMethod)
+  -> (cost      : Bits32)
+  -> (phrase    : Passphrase)
+  -> {auto 0 p1 : InRange cm cost}
+  -> IO String
 crypt cm cost (Element p _) = do
   salt <- gensalt cm cost
   pure $ prim__crypt salt p
@@ -228,11 +230,12 @@ crypt cm cost (Element p _) = do
 ||| fails to generate a valid salt (which is a highly unlikely thing
 ||| to happen).
 export
-cryptMaybe :  (cm     : CryptMethod)
-           -> (cost   : Bits32)
-           -> (phrase : String)
-           -> (0 p1   : InRange cm cost)
-           => IO (Maybe Hash)
+cryptMaybe :
+     (cm        : CryptMethod)
+  -> (cost      : Bits32)
+  -> (phrase    : String)
+  -> {auto 0 p1 : InRange cm cost}
+  -> IO (Maybe Hash)
 cryptMaybe cm cost phrase = do
   Just pp <- pure (refinePassphrase phrase) | Nothing => pure Nothing
   hash    <- crypt cm cost pp
