@@ -194,13 +194,15 @@ gensalt :
   -> {auto 0 prf : InRange cm cost}
   -> IO String
 gensalt cm cost = fromPrim (go 100)
-  where go : Nat -> PrimIO String
-        go Z     w = prim__gensalt (cryptPrefix cm) cost w
-        go (S n) w =
-          let MkIORes str w2 := prim__gensalt (cryptPrefix cm) cost w
-           in case checksalt str of
-                Invalid => go n w2
-                _       => MkIORes str w2
+
+  where
+    go : Nat -> PrimIO String
+    go Z     w = prim__gensalt (cryptPrefix cm) cost w
+    go (S n) w =
+      let MkIORes str w2 := prim__gensalt (cryptPrefix cm) cost w
+       in case checksalt str of
+            Invalid => go n w2
+            _       => MkIORes str w2
 
 ||| Hash the given passphrase with the given salt.
 ||| Usually, it is best to generate a new salt when hashing
