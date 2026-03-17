@@ -36,7 +36,10 @@ jobs:
           echo -e "\n=== Symbol Check ==="
           nm -D /usr/lib/x86_64-linux-gnu/libcrypt.so.* 2>/dev/null | grep crypt_gensalt_rn || echo "Symbol not found in runtime libs"
       - name: Build lib
-        run: pack --no-prompt install crypt
+        run: |
+          pack --no-prompt install crypt
+          ldd lib/libcrypt-idris.so
+          ldd support/libcrypt-idris.so
       - name: Run test
         run: |
           pack --no-prompt install-app crypt-test
