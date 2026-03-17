@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install --yes libxcrypt-devel
+          apt-get install --yes libcrypt-dev libcrypt1
       - name: Build lib
         run: pack --no-prompt install crypt
       - name: Run test
