@@ -31,16 +31,10 @@ jobs:
         run: |
           apt-get update
           apt-get install --yes libcrypt-dev
-          echo "=== Library Locations ==="
-          ldconfig -p | grep crypt
-          echo -e "\n=== Symbol Check ==="
-          nm -D /usr/lib/x86_64-linux-gnu/libcrypt.so.* 2>/dev/null | grep crypt_gensalt_rn || echo "Symbol not found in runtime libs"
       - name: Build lib
         run: |
           pack --no-prompt install crypt
           ldd lib/libcrypt-idris.so
           ldd support/libcrypt-idris
       - name: Run test
-        run: |
-          pack --no-prompt install-app crypt-test
-          ldd test/build/exec/crypt-test_app/libcrypt-idris.so
+        run: pack --no-prompt run crypt-test
