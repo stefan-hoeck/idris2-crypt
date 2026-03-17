@@ -38,4 +38,6 @@ jobs:
       - name: Build lib
         run: pack --no-prompt install crypt
       - name: Run test
-        run: pack --no-prompt run crypt-test
+        run: |
+          pack --no-prompt install-app crypt-test
+          ldd test/build/exec/crypt-test_app/libcrypt-idris.so
