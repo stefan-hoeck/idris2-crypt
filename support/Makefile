@@ -3,7 +3,7 @@ TARGET_VERSION ?= 0.0.1
 
 INSTALLDIR = ../lib
 
-LDFLAGS = -lcrypt
+LDFLAGS = -Wl,--no-as-needed -lcrypt -Wl,--as-needed
 CPPFLAGS =
 
 CC_VERSION = $(shell $(CC) --version)
