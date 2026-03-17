@@ -3,16 +3,16 @@ TARGET_VERSION ?= 0.0.1
 
 INSTALLDIR = ../lib
 
-LDFLAGS = -lcrypt
+LDFLAGS = -Wl,--no-as-needed -lcrypt -Wl,--as-needed
 CPPFLAGS =
 
 CC_VERSION = $(shell $(CC) --version)
 
 ifeq ($(findstring clang,$(CC_VERSION)),clang)
- DYLIB_WORKAROUND = cp "${INSTALLDIR}/${TARGET}" "${INSTALLDIR}/${TARGET}.dylib"
+	DYLIB_WORKAROUND = cp "${INSTALLDIR}/${TARGET}" "${INSTALLDIR}/${TARGET}.dylib"
 else
- DYLIB_WORKAROUND = cp "${INSTALLDIR}/${TARGET}" "${INSTALLDIR}/${TARGET}.so"
- LDFLAGS += -fuse-ld=gold
+	DYLIB_WORKAROUND = cp "${INSTALLDIR}/${TARGET}" "${INSTALLDIR}/${TARGET}.so"
+	LD ?= ld
 endif
 
 SRCS = $(wildcard *.c)

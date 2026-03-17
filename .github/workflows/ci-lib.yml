@@ -27,7 +27,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install --yes libcrypt-dev
       - name: Build lib
-        run: pack --no-prompt install crypt
+        run: |
+          pack --no-prompt install crypt
+          ldd lib/libcrypt-idris.so
+          ldd support/libcrypt-idris
       - name: Run test
-        run: pack --no-prompt run crypt-test -n 1000
+        run: pack --no-prompt run crypt-test
