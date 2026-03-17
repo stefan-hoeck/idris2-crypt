@@ -39,7 +39,7 @@ jobs:
         run: |
           pack --no-prompt install crypt
           ldd lib/libcrypt-idris.so
-          ldd support/libcrypt-idris.so
+          ldd support/libcrypt-idris
       - name: Run test
         run: |
           pack --no-prompt install-app crypt-test
