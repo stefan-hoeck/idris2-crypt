@@ -27,7 +27,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install --yes libxcrypt-dev
       - name: Build lib
-        run: pack --no-prompt install libxcrypt-dev
+        run: pack --no-prompt install crypt
       - name: Run test
         run: pack --no-prompt run crypt-test -n 1000
