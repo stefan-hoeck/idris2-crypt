@@ -3,7 +3,7 @@ TARGET_VERSION ?= 0.0.1
 
 INSTALLDIR = ../lib
 
-LDFLAGS = -Wl,--no-as-needed -lcrypt -Wl,--as-needed
+LDFLAGS = -lcrypt
 CPPFLAGS =
 
 CC_VERSION = $(shell $(CC) --version)
@@ -20,7 +20,7 @@ OBJS = $(SRCS:.c=.o)
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) -shared $(LDFLAGS) -o $@ $^
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
 
 .PHONY: clean
 
